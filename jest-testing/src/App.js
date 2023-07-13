@@ -1,20 +1,21 @@
-import React, { useState } from "react";
+/** @jest-environment jsdom */
+import React from "react";
+import { render, screen } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import App from "./App";
 
-const App = () => {
- const [heading, setHeading] = useState("Logged Out");
+jest.mock('axios', () => ({
+ get: () => Promise.resolve({ data: 'Mocked Data' }),
+}));
 
- const onClick= () => {
-  setHeading("Logged In");
- };
+describe("App component", () => {
+ it("renders API data", async () => {
 
- return (
-  <>
-   <button type="button" onClick={onClick}>
-    Log In
-   </button>
-   <h1>{heading}</h1>
-  </>
- );
-};
+  const { findByText } = render(<App />);
 
-export default App;
+ const dataElement = await findByText('Mocked Data');
+
+ expect(dataElement).toBeTruthy()
+ });
+
+});
