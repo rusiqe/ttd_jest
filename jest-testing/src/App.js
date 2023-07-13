@@ -1,21 +1,22 @@
-/** @jest-environment jsdom */
-import React from "react";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
-import App from "./App";
+import React, { useState,useEffect } from "react";
+import axios from 'axios';
 
-jest.mock('axios', () => ({
- get: () => Promise.resolve({ data: 'Mocked Data' }),
-}));
+const App = () => {
+  const [data, setData] = useState(null);
 
-describe("App component", () => {
- it("renders API data", async () => {
-
-  const { findByText } = render(<App />);
-
- const dataElement = await findByText('Mocked Data');
-
- expect(dataElement).toBeTruthy()
- });
-
-});
+  useEffect(() => {
+   const fetchData = async () => {
+    try {
+     const response = await axios.get('/data');
+     setData(response.data);
+    } catch (error) {
+     console.error(error);
+    }
+   };
+  
+   fetchData();
+  }, []);
+  
+  return <div>{data}</div>;
+};
+export default App;

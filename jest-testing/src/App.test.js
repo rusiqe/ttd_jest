@@ -4,22 +4,18 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import App from "./App";
 
+jest.mock('axios', () => ({
+ get: () => Promise.resolve({ data: 'Mocked Data' }),
+}));
+
 describe("App component", () => {
- it("renders Logged out", () => {
+ it("renders API data", async () => {
 
-  render(<App />);
+  const { findByText } = render(<App />);
 
-  expect(screen.getByRole("heading").textContent).toMatch('Logged Out')
+ const dataElement = await findByText('Mocked Data');
+
+ expect(dataElement).toBeTruthy()
  });
 
- it("renders logged in after button click", async () => {
-  const user = userEvent.setup();
-
-  render(<App />);
-  const button = screen.getByRole("button", { name: "Log In" });
-
-  await user.click(button);
-
-  expect(screen.getByRole("heading").textContent).toMatch('Logged In');
- });
 });
